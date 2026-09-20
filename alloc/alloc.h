@@ -47,4 +47,6 @@ struct packed s_header {
 void *mkalloc(word, header*);
 void *alloc(int32);
 void read_mem(int8 *, word);
+void dealloc(void *);
+void reallocate(void **, int32);
 int main(int,char**);

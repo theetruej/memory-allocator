@@ -22,6 +22,16 @@ void *mkalloc(word words, header *hdr) {
 
 }
 
+void dealloc(void *ptr) {
+    if (ptr == NULL) {
+        return;
+    }
+    header *hdr = $h((unsigned char *)ptr - sizeof(header));
+    hdr->allocated = false;
+}
+
+
+
 void read_mem(int8 *buf, word bytes){
     if(buf == NULL){
         printf("Buffer is NULL\n");
@@ -53,7 +63,7 @@ void *alloc(int32 bytes){
         (bytes / 4) + 1;
     mem = $v memspace;
     hdr = $h mem;
-    if (!(hdr->w)) {
+    if (!hdr->allocated) {
         if (words > Maxwords) {
             reterr(ErrNoMem);
         }
@@ -66,12 +76,56 @@ void *alloc(int32 bytes){
     return $v 0;
 }
 
+void reallocate(void **ptr, int32 new_size) {
+    if(ptr == NULL) {
+        alloc(new_size);
+        return;
+    }
+    if (*ptr == NULL) {
+        *ptr = alloc(new_size);
+        return;
+    }
+    if (new_size == 0) {
+        dealloc(*ptr);
+        *ptr = NULL;
+        return;
+    }
+    header *hdr = $h((unsigned char *)*ptr - sizeof(header));
+    int32 old_size = hdr->w * sizeof(word);
+    if (new_size <= old_size) {
+        return;
+    }
+    void *new_ptr = alloc(new_size);
+    if (new_ptr == NULL) {
+        return;
+    }
+    write_mem(new_ptr, *ptr, old_size);
+    dealloc(*ptr);
+    *ptr = new_ptr;
+}
+
 int main(int argc, char *argv[]) {
-    int8 *p = alloc(10);
     char *ptr = "Hello, World!";
+    int8 *p = alloc(strlen(ptr) + 1);
     write_mem(p, ptr, strlen(ptr));
     read_mem(p, strlen(ptr));
-    
+    dealloc(p);
+    p = NULL;
+    printf("Memory deallocated successfully\n");
+    char *new_ptr = "New allocation!";
+    p = alloc(strlen(new_ptr) + 1);
+    if (p == NULL) {
+        return 1;
+    }
+    write_mem(p, new_ptr, strlen(new_ptr));
+    read_mem(p, strlen(new_ptr));
+    reallocate((void**)&p, 30);
+    if (p == NULL) {
+        return 1;
+    }
+    char *realloc_ptr = "Reallocated memory!";
+    write_mem(p, realloc_ptr, strlen(realloc_ptr));
+    read_mem(p, strlen(realloc_ptr));
 
     return 0;
 }
