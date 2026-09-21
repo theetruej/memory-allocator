@@ -40,5 +40,9 @@ In the alloc.c program, it grabs the header file (alloc.h) and standard definiti
 
 <img width="451" height="461" alt="Screenshot 2026-09-21 at 3 15 10 PM" src="https://github.com/user-attachments/assets/71543c52-4ca1-4126-a497-e90df546ea75" />
 
+The alloc() function is utilized to allocated a requested amount of memory from the allocator's managed heap. It determines where the requested memory can be placed, creates or updates the corresponding block metadata, and returns a pointer to a usable memory region.
+
+<img width="622" height="1043" alt="Alloc drawio" src="https://github.com/user-attachments/assets/1c515d19-5037-4dae-a45c-d1e3eac09753" />
+
 
 
