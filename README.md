@@ -67,3 +67,5 @@ reallocate() resizes an existing allocation when a larger amount of memory is re
 
 Finally int main() runs test code to check all of the memory allocating functions.
 
+<img width="736" height="519" alt="image" src="https://github.com/user-attachments/assets/7de7cdec-d099-4d0c-91b6-bc851a374e03" />
+
